@@ -150,6 +150,10 @@ UI 里的数据（版本号、本地目录、上次刷新结果）不属于 conf
 
 `npm test` 走的就是 `run.sh`，CI 因此也跑的是同一套带证明的用例。
 
+## 发布
+
+发布由 tag 驱动，详见 [docs/RELEASING.md](./docs/RELEASING.md)。
+
 ## 许可证
 
 [MIT](./LICENSE) © 2026 Keycap AI & Rentong Zhang

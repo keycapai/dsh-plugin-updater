@@ -23,7 +23,8 @@
     "cordis.patch.yml",
     "icon.svg",
     "README.md",
-    "CONTRACT.md"
+    "CONTRACT.md",
+    "docs"
   ],
   "dsh": {
     "bundle": {
