@@ -40,7 +40,7 @@
   },
   "scripts": {
     "test": "bash test/run.sh",
-    "test:fast": "node --test --test-force-exit test/"
+    "test:fast": "node --test --test-force-exit test/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
