@@ -41,13 +41,14 @@ TEST_FILES=(
 	test/reload.test.mjs
 )
 
-# --test-isolation=none only exists from Node 22. On an older Node the flag is
-# simply absent, so probe for it rather than letting the run die on an unknown
-# option. (The reload proof still needs --expose-internals + Node 22 to prove
-# anything; on older Node it reports itself unsupported and skips.)
+# --test-isolation=none landed in Node 24; on 20 and 22 it is an unknown option
+# and node exits before running a single test. Probe for it instead of assuming,
+# and let the run continue without it on older Node: the reload proof then
+# reports itself unsupported (the preflight says so out loud) while the other
+# suites still run for real.
 NODE_MAJOR="$("$NODE" -p "process.versions.node.split('.')[0]")"
 TEST_FLAGS=(--expose-internals --test --test-reporter=spec)
-if [[ "${NODE_MAJOR:-0}" -ge 22 ]]; then
+if [[ "${NODE_MAJOR:-0}" -ge 24 ]]; then
 	TEST_FLAGS+=(--test-isolation=none)
 fi
 
