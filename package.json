@@ -1,0 +1,71 @@
+{
+  "name": "dsh-plugin-updater",
+  "version": "1.1.1",
+  "description": "Keeps the current profile's plugins current: checks the npm registry for newer bundle versions, and hot-refreshes locally-developed (link/file) plugins by evicting their module cache and restarting their fibers in place — no Harness restart.",
+  "type": "module",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./inventory": "./lib/inventory.js",
+    "./reload": "./lib/reload.js",
+    "./watch": "./lib/watch.js",
+    "./semver": "./lib/semver.js",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./client": "./client.js"
+  },
+  "files": [
+    "lib/*.js",
+    "client.js",
+    "locale/*.json",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "CONTRACT.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-plugin-manager",
+        "@deepseek-ai/dsh-client-ui-sidebar"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "bash test/run.sh",
+    "test:fast": "node --test --test-force-exit test/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/schemastery": "~3.18.4"
+  },
+  "icon": "./icon.svg",
+  "author": "keycapai",
+  "homepage": "https://github.com/keycapai/dsh-plugin-updater#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keycapai/dsh-plugin-updater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/keycapai/dsh-plugin-updater/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "plugin-manager",
+    "hot-reload",
+    "npm-registry",
+    "keycapai"
+  ]
+}

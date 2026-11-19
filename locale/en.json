@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Plugin auto-update",
+    "description": "Checks the npm registry for newer versions of installed plugins, and hot-refreshes locally-developed (link:/path) plugins in place after a source edit: the module cache is evicted and the plugin's fibers restart inside the running Host, with no Harness restart."
+  }
+}

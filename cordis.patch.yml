@@ -1,0 +1,90 @@
+# dsh-plugin-updater — the bundle patch layer.
+#
+# A DSH bundle is any package that ships this file and declares it in
+# package.json as `dsh.bundle.patch`. Installing the bundle applies this patch
+# layer, mounting the row below.
+#
+# Every value here is a default. Override any of them from your profile's own
+# cordis.patch.yml (target the row id `plugin-updater`), which takes precedence
+# over bundle layers.
+
+- insert:
+    - id: plugin-updater
+      name: "dsh-plugin-updater"
+      config:
+        # Master switch. When false the plugin arms nothing at all: no watcher,
+        # no timer, no tool.
+        enabled: true
+
+        # ── Registry (npm-installed plugins) ────────────────────────────────
+        # Ask the registry what the newest version of each installed bundle is.
+        # This is a network read only; it never changes anything on disk.
+        checkRegistry: true
+
+        # Only check and update plugins that are enabled in the profile (dsh.profile.bundles).
+        # When true, disabled plugins are skipped during registry check and update.
+        onlyEnabled: true
+
+        # How often to REPEAT that check, in minutes. One check also runs at
+        # startup, so a value of 360 means: at start, then every 6 hours.
+        # The interval is measured from when each check FINISHES, so a slow
+        # registry can never stack checks on top of each other.
+        # Set 0 to disable the repeating check entirely (the `plugin_update`
+        # tool still answers on demand, and no startup check runs).
+        checkIntervalMinutes: 360
+
+        # Actually install newer versions by itself. OFF by default: an update
+        # replaces code that is currently running, so it is your decision, not a
+        # background decision. Turning this on is the only way the plugin
+        # changes your profile without you asking.
+        autoUpdateRegistry: false
+
+        # Registries asked first, in order. Leave empty to use the profile's
+        # configured registry (the same one `plugin_manager` uses).
+        registries: []
+
+        # Include prerelease versions when deciding what "newest" means.
+        includePrerelease: false
+
+        # Deadline for one registry question, in milliseconds.
+        timeoutMs: 20000
+
+        # ── Local development (link: / path dependencies) ───────────────────
+        # Watch locally-developed plugin directories and refresh them the moment
+        # their sources change. This is the part that needs no restart: the new
+        # module graph is imported into the RUNNING process and the plugin's
+        # fibers are restarted in place.
+        watchLocal: true
+
+        # Quiet period after the last file event before reloading, in
+        # milliseconds. Long enough that a save-all does not reload half-written
+        # files.
+        debounceMs: 400
+
+        # Extra directories to watch, beyond the ones the profile already points
+        # at through `link:` dependencies. Absolute paths.
+        extraWatchDirs: []
+
+        # Directory names skipped anywhere in a watched tree. `node_modules` is
+        # always skipped and does not need to be listed.
+        ignored:
+          - .git
+          - .cache
+          - coverage
+          - dist
+          - build
+
+        # Only refresh when a file with one of these extensions changes. An
+        # empty list means every file counts.
+        watchExtensions:
+          - .js
+          - .mjs
+          - .cjs
+          - .json
+          - .ts
+          - .tsx
+          - .css
+
+        # ── Diagnostics ────────────────────────────────────────────────────
+        # Log one line per reload and per update check.
+        log: true
