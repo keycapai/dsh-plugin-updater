@@ -41,11 +41,21 @@ TEST_FILES=(
 	test/reload.test.mjs
 )
 
+# --test-isolation=none only exists from Node 22. On an older Node the flag is
+# simply absent, so probe for it rather than letting the run die on an unknown
+# option. (The reload proof still needs --expose-internals + Node 22 to prove
+# anything; on older Node it reports itself unsupported and skips.)
+NODE_MAJOR="$("$NODE" -p "process.versions.node.split('.')[0]")"
+TEST_FLAGS=(--expose-internals --test --test-reporter=spec)
+if [[ "${NODE_MAJOR:-0}" -ge 22 ]]; then
+	TEST_FLAGS+=(--test-isolation=none)
+fi
+
 echo "════════════════════════════════════════════════════════════════"
 echo " dsh-plugin-updater test suite"
 echo " node             : $("$NODE" --version)"
 echo " cwd              : $(pwd)"
-echo " flags            : --expose-internals --test-isolation=none"
+echo " flags            : ${TEST_FLAGS[*]}"
 echo "════════════════════════════════════════════════════════════════"
 echo
 
@@ -87,11 +97,13 @@ console.log(`   loadCache shape     : ${internal.loadCache?.constructor?.name} (
 ' || echo "   (preflight failed — reload tests will report unsupported)"
 echo
 
-OUTPUT="$(mktemp -t dsh-plugin-updater-tests)"
+# A bare `-t NAME` is a BSD extension; GNU mktemp insists on a template with
+# XXXXXX. An explicit template works on both.
+OUTPUT="$(mktemp -t dsh-plugin-updater-tests.XXXXXX)"
 trap 'rm -f "$OUTPUT"' EXIT
 
 # ── the run ────────────────────────────────────────────────────────────────
-"$NODE" --expose-internals --test --test-isolation=none --test-reporter=spec "${TEST_FILES[@]}" 2>&1 | tee "$OUTPUT"
+"$NODE" "${TEST_FLAGS[@]}" "${TEST_FILES[@]}" 2>&1 | tee "$OUTPUT"
 STATUS=${PIPESTATUS[0]}
 
 # ── summary ────────────────────────────────────────────────────────────────

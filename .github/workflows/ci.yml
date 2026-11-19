@@ -16,8 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Node 22 is the floor: the hot-reload proof evicts entries from Node's
+      # INTERNAL ESM loader, and `--test-isolation=none` (required so the worker
+      # inherits --expose-internals) does not exist before 22. On 20 the reload
+      # tests skip themselves, so testing 20 here would report green while
+      # proving nothing — worse than not testing it.
       matrix:
-        node: [20, 22, 24]
+        node: [22, 24]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
